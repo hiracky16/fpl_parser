@@ -13,6 +13,7 @@ def read_gcs_object(path):
         text = blob.download_as_string().decode('utf-8')
         obj = json.loads(text)
         return obj
-    except:
+    except Exception as e:
+        print(e)
         return None
 

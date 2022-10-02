@@ -2,20 +2,14 @@ import pandas as pd
 from google.cloud import storage
 import os, datetime, json, sys
 from functions import read_gcs_object
+from functions import read_gcs_object
+from dateutil import tz
+JST = tz.gettz('Asia/Tokyo')
 
 # const
 RAW_FILE_BUCKET = os.environ['RAW_BUCKET']
 DATE_FORMAT = '%Y-%m-%d'
 MAX_EVENT = 38
-
-def read_gcs_object(path):
-    try:
-        blob = bucket.get_blob(path)
-        text = blob.download_as_string().decode('utf-8')
-        obj = json.loads(text)
-        return obj
-    except:
-        return None
 
 def parse_bootstrap_elements(dt: datetime.date):
     stats = []
@@ -27,9 +21,10 @@ def parse_bootstrap_elements(dt: datetime.date):
         return
     df = pd.json_normalize(obj['elements'])
     output_path = f'gs://{RAW_FILE_BUCKET}/api=fpl_api/type=elements/date={dt.strftime(DATE_FORMAT)}/data.csv'
+    print(output_path)
     df.to_csv(output_path, index=False)
 
-dt = datetime.date.today()
+dt = datetime.datetime.now(JST).date()
 if len(sys.argv) > 1:
     dt = datetime.datetime.strptime(sys.argv[1], DATE_FORMAT).date()
 

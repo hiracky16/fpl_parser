@@ -2,6 +2,8 @@ import pandas as pd
 from google.cloud import storage
 import os, datetime, json, sys
 from functions import read_gcs_object
+from dateutil import tz
+JST = tz.gettz('Asia/Tokyo')
 
 # const
 RAW_FILE_BUCKET = os.environ['RAW_BUCKET']
@@ -24,9 +26,10 @@ def parse_event_elements(dt: datetime.date):
             stats.append(stat)
         df = pd.json_normalize(stats)
         output_path = f'gs://{RAW_FILE_BUCKET}/api=fpl_api/type=parsed_event-live/date={dt.strftime(DATE_FORMAT)}/event={event}/data.csv'
+        print(output_path)
         df.to_csv(output_path, index=False)
 
-dt = datetime.date.today()
+dt = datetime.datetime.now(JST).date()
 if len(sys.argv) > 1:
     dt = datetime.datetime.strptime(sys.argv[1], DATE_FORMAT).date()
 
