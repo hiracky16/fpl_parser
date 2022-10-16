@@ -22,6 +22,7 @@ def parse_event_fixtures(dt: datetime.date):
         fixtures = []
         for o in obj:
             del o['stats']
+            del o['event']
             fixtures.append(o)
 
         df = pd.json_normalize(obj)
