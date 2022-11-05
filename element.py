@@ -10,6 +10,7 @@ JST = tz.gettz('Asia/Tokyo')
 RAW_FILE_BUCKET = os.environ['RAW_BUCKET']
 DATE_FORMAT = '%Y-%m-%d'
 MAX_EVENT = 38
+TYPE = os.environ['TYPE'] or 'elements'
 
 def parse_bootstrap_elements(dt: datetime.date):
     stats = []
@@ -20,7 +21,7 @@ def parse_bootstrap_elements(dt: datetime.date):
     if not obj or 'elements' not in obj or  len(obj['elements']) == 0:
         return
     df = pd.json_normalize(obj['elements'])
-    output_path = f'gs://{RAW_FILE_BUCKET}/api=fpl_api/type=elements/date={dt.strftime(DATE_FORMAT)}/data.csv'
+    output_path = f'gs://{RAW_FILE_BUCKET}/api=fpl_api/type={TYPE}/date={dt.strftime(DATE_FORMAT)}/data.csv'
     print(output_path)
     df.to_csv(output_path, index=False)
 
