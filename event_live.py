@@ -25,7 +25,7 @@ def parse_event_elements(dt: datetime.date):
             stat.update({'id': o['id']})
             stats.append(stat)
         df = pd.json_normalize(stats)
-        output_path = f'gs://{RAW_FILE_BUCKET}/api=fpl_api/type=parsed_event-live/date={dt.strftime(DATE_FORMAT)}/event={event}/data.csv'
+        output_path = f'gs://{RAW_FILE_BUCKET}/api=fpl_api/type=parsed_event-live_20221114/date={dt.strftime(DATE_FORMAT)}/event={event}/data.csv'
         print(output_path)
         df.to_csv(output_path, index=False)
 
